@@ -1,7 +1,7 @@
 # Operating System Deployment
 ## Windows 10 - 1703
 ### Disable Cortana in OOBE
-Cortana has a lovely habit of wanting a conversation with you during OS deployment. Imaging a single machine in a quiet office or 100+ in a building is equally embarassing.
+Cortana has a lovely habit of starting a conversation with you during OS deployment. Imaging a single machine in a quiet office or 100+ in a building is equally embarassing.
 
 Rather than using depreciated settings (that happen to work just fine), modifying your unattend.xml or nasty volume hacks - I prefer to specifically target the annoyance and remove it during a capture task sequence :
 
