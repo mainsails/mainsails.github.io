@@ -10,14 +10,15 @@ Here is some code :
 $dir = Get-ChildItem -Path $env:ALLUSERSPROFILE
 ```
 2. List files
-```PowerShell
+```powershell
 $dir
 ```
 
 ### Header 3
 Here's another bit of text
+
 Here is another code snippet
-```PowerShell
+```powershell
 $dir = Get-ChildItem -Path $env:ALLUSERSPROFILE
 $dir
 ```
