@@ -1,27 +1,22 @@
-### Markdown
-
-Markdown conventions
-
-```markdown
-Syntax highlighted code block
-
 # Header 1
+Here is some text
+
 ## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+Here is some more text
+Here is some code :
+1. Get files
+```PowerShell
+$dir = Get-ChildItem -Path $env:ALLUSERSPROFILE
+```
+2. List files
+```PowerShell
+$dir
 ```
 
-Markdown details : [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Header Three
-
-Test Test
+### Header 3
+Here's another bit of text
+Here is another code snippet
+```PowerShell
+$dir = Get-ChildItem -Path $env:ALLUSERSPROFILE
+$dir
+```
