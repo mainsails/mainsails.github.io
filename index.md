@@ -3,9 +3,10 @@ Here is some text
 
 ## Header 2
 Here is some more text
+
 Here is some code :
 1. Get files
-```PowerShell
+```powershell
 $dir = Get-ChildItem -Path $env:ALLUSERSPROFILE
 ```
 2. List files
