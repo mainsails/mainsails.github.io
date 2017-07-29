@@ -30,8 +30,7 @@ Else {
     $null = Set-ItemProperty -LiteralPath $Key -Name $Name -Value $Value -ErrorAction 'Stop'
 }
 ```
-
-https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-MuteOOBECortanaVoice.ps1
+<https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-MuteOOBECortanaVoice.ps1>
 
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
