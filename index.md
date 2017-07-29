@@ -35,7 +35,7 @@ Else {
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
 ### Remove AppX Packages
-There's ongoing arguments within the OS deployment community regarding the futility of "stripping out" select Microsoft applications from our images. I've always believed in a clean, vanilla build as most do but it seems that my definition differs from some. Times have changed, the future is here and an out of the box Windows client is a different beast now.
+There's ongoing arguments within the OS deployment community regarding the futility of stripping out applications from our images. I've always believed in a clean, vanilla build as most do but it seems that my definition differs from some. Times have changed, the future is here and an out of the box Windows client is a different beast now.
 
 Unless you're running LTSB, even in the Enterprise SKUs of Windows we're faced with a long list of questionable apps in a default install. We can leave it like it is, let our users decide and start documenting our responses to the imminent IG interrogations or.... Twice a year (with our shiny new build releases) we can add a line or two to our AppX removal script and stay in control :
 
