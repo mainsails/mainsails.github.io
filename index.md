@@ -30,7 +30,7 @@ Else {
     $null = Set-ItemProperty -LiteralPath $Key -Name $Name -Value $Value -ErrorAction 'Stop'
 }
 ```
-<https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-MuteOOBECortanaVoice.ps1>
+[Set-MuteOOBECortanaVoice.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-MuteOOBECortanaVoice.ps1)
 
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
@@ -132,6 +132,6 @@ ForEach ($App In $AppPackages) {
 
 }
 ```
-https://github.com/mainsails/ps/blob/master/Imaging/Capture/Remove-AppXPackages.ps1
+[Remove-AppXPackages.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Remove-AppXPackages.ps1)
 
 Added to our image capture task sequence, we can remove all concerning AppX packages along with the provisioned versions, preventing them from coming back every time a new user logs in. 
