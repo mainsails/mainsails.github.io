@@ -34,6 +34,7 @@ Else {
 
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
+
 ### Remove AppX Packages
 There's ongoing arguments within the OS deployment community regarding the futility of stripping out applications from our images. I've always believed in a clean, vanilla build as most do but it seems that my definition differs from some. Times have changed, the future is here and an out of the box Windows client is a different beast now.
 
@@ -135,3 +136,54 @@ ForEach ($App In $AppPackages) {
 [Remove-AppXPackages.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Remove-AppXPackages.ps1)
 
 Added to our image capture task sequence, we can remove all concerning AppX packages along with the provisioned versions, preventing them from coming back every time a new user logs in. 
+
+
+### BitLocker Pre-provisioning - Algorithms
+Windows 10 (1511+) introduced a new BitLocker algorithm, AES-XTS. As usual, settings like this are easy to manage on domain joined machines through Group Policy/MBAM but it's worth consideration for image deployment.
+
+BitLocker pre-provisioning during imaging is excellent, encrypting a freshly formatted disk with no data takes a split-second and keeps data secure from the very start of the process. Traditionally enabling BitLocker post-deployment can take hours on a slow disk, is an IG risk disk till it's complete, uses all disk IO bandwidth and the majority of usable space until finished.
+
+It's may be a quick-win but there's a caveat to those deploying older operating systems while running the latest ADK. Windows PE 10 will default to encypting disks with new alorithm (AES-XTS 128bit) and as it is unsupported on older operating systems, after your image has been copied to disk, the process will fail when it actually tries to boot.
+
+The solution is simple, set the encrpytion algorithm before BitLocker pre-provisioning starts. This can be the lowest common denominator or as we'll be doing this in a Task Sequence with PowerShell, we may as well do this dynamically depending on the OS version being deployed :
+
+```powershell
+# Set Encryption Method Based on Target Operating System
+If ($TSEnv.Value('TASKSEQUENCENAME') -like '*Windows 10*') {
+    $EncryptionMethod = '7'
+}
+Else {
+    $EncryptionMethod = '4'
+}
+
+# Create Registry Object
+$RegistryPath    = 'HKLM:\SOFTWARE\Policies\Microsoft\FVE'
+$RegistryEntries = @(
+    @{ 'Path' = $RegistryPath ; 'Name' = 'EncryptionMethodWithXtsFdv'   ; 'Value' = $EncryptionMethod ; 'Type' = 'DWORD'  }
+    @{ 'Path' = $RegistryPath ; 'Name' = 'EncryptionMethodWithXtsOs'    ; 'Value' = $EncryptionMethod ; 'Type' = 'DWORD'  }
+    @{ 'Path' = $RegistryPath ; 'Name' = 'EncryptionMethodWithXtsRdv'   ; 'Value' = $EncryptionMethod ; 'Type' = 'DWORD'  }
+    @{ 'Path' = $RegistryPath ; 'Name' = 'IdentificationField'          ; 'Value' = '1'               ; 'Type' = 'DWORD'  }
+    @{ 'Path' = $RegistryPath ; 'Name' = 'IdentificationFieldString'    ; 'Value' = 'BHFT'            ; 'Type' = 'String' }
+    @{ 'Path' = $RegistryPath ; 'Name' = 'SecondaryIdentificationField' ; 'Value' = 'BHT'             ; 'Type' = 'String' }
+)
+
+# Create Registry Key
+If (!(Test-Path -Path $RegistryPath)) {
+    New-Item -Path $RegistryPath -Force
+}
+# Set Registry Values
+ForEach ($RegistryEntry in $RegistryEntries) {
+    New-ItemProperty -Path $RegistryEntry.Path -Name $RegistryEntry.Name -Value $RegistryEntry.Value -PropertyType $RegistryEntry.Type -Force
+}
+```
+[Configure-BitLockerPreprovision.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Deploy/Configure-BitLockerPreprovision.ps1)
+
+The above is a simple boilerplate template for Windows 10 and Windows 7 deployments.
+It sets the encrpytion method and cipher strength for :
+* Fixed Data Drives
+* Operating System Drives
+* Removable Data Drives
+- Windows 10 will have these set to AES-XTS with a key size of 256 bits
+- Windows 7 will have these set to AES-CBC with a key size of 256 bits
+
+[Encryption algorithm and key size](https://msdn.microsoft.com/en-us/library/windows/desktop/aa376434(v=vs.85).aspx)
