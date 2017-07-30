@@ -179,7 +179,7 @@ ForEach ($RegistryEntry in $RegistryEntries) {
 [Configure-BitLockerPreprovision.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Deploy/Configure-BitLockerPreprovision.ps1)
 
 The above is a simple boilerplate template for Windows 10 and Windows 7 deployments.
-It sets the encrpytion method and cipher strength for :
+It sets the encryption method and cipher strength for :
 * Fixed Data Drives
 * Operating System Drives
 * Removable Data Drives
