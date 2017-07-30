@@ -183,7 +183,8 @@ It sets the encrpytion method and cipher strength for :
 * Fixed Data Drives
 * Operating System Drives
 * Removable Data Drives
-- Windows 10 will have these set to AES-XTS with a key size of 256 bits
-- Windows 7 will have these set to AES-CBC with a key size of 256 bits
 
-[Encryption algorithm and key size](https://msdn.microsoft.com/en-us/library/windows/desktop/aa376434(v=vs.85).aspx)
+* Windows 10 will have these set to AES-XTS with a key size of 256 bits
+* Windows 7 will have these set to AES-CBC with a key size of 256 bits
+
+[Microsft Reference : Encryption algorithm and key size](https://msdn.microsoft.com/en-us/library/windows/desktop/aa376434(v=vs.85).aspx)
