@@ -3,3 +3,5 @@ title: deployment.fun
 description: Operating System and Application Deployment
 footer-links:
   github: mainsails/ps
+exclude:
+  - CNAME
