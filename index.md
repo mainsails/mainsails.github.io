@@ -143,7 +143,7 @@ Windows 10 (1511+) introduced a new BitLocker algorithm, AES-XTS. As usual, sett
 
 BitLocker pre-provisioning during imaging is excellent, encrypting a freshly formatted disk with no data takes a split-second and keeps data secure from the very start of the process. Traditionally enabling BitLocker post-deployment can take hours on a slow disk, is an IG risk disk till it's complete, uses all disk IO bandwidth and the majority of usable space until finished.
 
-It's may be a quick-win but there's a caveat to those deploying older operating systems while running the latest ADK. Windows PE 10 will default to encypting disks with new alorithm (AES-XTS 128bit) and as it is unsupported on older operating systems, after your image has been copied to disk, the process will fail when it actually tries to boot.
+It may be a quick-win but there's a caveat to those deploying older operating systems while running the latest ADK. Windows PE 10 will default to encypting disks with new alorithm (AES-XTS 128bit) and as it is unsupported on older operating systems, after your image has been copied to disk, the process will fail when it actually tries to boot.
 
 The solution is simple, set the encrpytion algorithm before BitLocker pre-provisioning starts. This can be the lowest common denominator or as we'll be doing this in a Task Sequence with PowerShell, we may as well do this dynamically depending on the OS version being deployed :
 
