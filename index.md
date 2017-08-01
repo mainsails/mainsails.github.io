@@ -1,3 +1,6 @@
+* Contents
+{:toc}
+
 # Operating System Deployment
 ## Windows 10 - 1703
 ### Disable Cortana in OOBE
