@@ -138,7 +138,20 @@ ForEach ($App In $AppPackages) {
 ```
 [Remove-AppXPackages.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Remove-AppXPackages.ps1)
 
-Added to our image capture task sequence, we can remove all concerning AppX packages along with the provisioned versions, preventing them from coming back every time a new user logs in. 
+Added to our image capture task sequence, we can remove all concerning AppX packages along with the provisioned versions, preventing them from coming back every time a new user logs in.
+
+
+### Common Sysprep failures
+* Windows 10
+Sysprep errors due to Windows Store updates :
+```
+'HKLM:\Policies\Microsoft\WindowsStore','AutoDownload','REG_DWORD','2'
+```
+* Windows 2008R2 / Windows 7
+Sysprep errors after installing WMF 5.1 :
+```
+'HKLM:\SOFTWARE\Microsoft\Windows\StreamProvider','LastFullPayloadTime','REG_DWORD','0'
+```
 
 
 ## Image Deployment
