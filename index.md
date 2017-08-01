@@ -38,7 +38,6 @@ Else {
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
 
-## Image Deployment
 ### Remove AppX Packages
 There's ongoing arguments within the OS deployment community regarding the futility of stripping out applications from our images. I've always believed in a clean, vanilla build as most do but it seems that my definition differs from some. Times have changed, the future is here and an out of the box Windows client is a different beast now.
 
@@ -142,6 +141,7 @@ ForEach ($App In $AppPackages) {
 Added to our image capture task sequence, we can remove all concerning AppX packages along with the provisioned versions, preventing them from coming back every time a new user logs in. 
 
 
+## Image Deployment
 ### BitLocker Pre-provisioning - Algorithms
 Windows 10 (1511+) introduced a new BitLocker algorithm, AES-XTS. As usual, settings like this are easy to manage on domain joined machines through Group Policy/MBAM but it's worth consideration for image deployment.
 
