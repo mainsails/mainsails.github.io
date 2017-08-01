@@ -1,6 +1,10 @@
 * Contents
 {:toc}
 
+
+{:.no_toc}
+
+
 # Operating Systems
 ## Image Capture
 ### Disable Cortana in OOBE
