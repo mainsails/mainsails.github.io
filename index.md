@@ -353,3 +353,36 @@ Write-CMTraceLog "BIOS Update Scan Finished"
 This has the executable's arguments set for Dell and a placeholder for HP. I've also added a CMTrace logging function that will save the logs to the Task Sequence's LOGPATH variable (where it keeps all the other logs) and formats the output into something that will parse nicely.
 
 After BIOS update executables are launched, they tend to exit, reboot and perform the actual firmware flash afterwards. The script takes the exit code and sets a Task Sequence Variable if a reboot is required. If an update is successully run, the Task Sequence can gracefully reboot, flash and resume!
+
+
+### Branding / Support Information
+Setting a computer's 'Control Panel > System and Security > System branding' information is simple and can be done either during image capture or deployment (although setting a dynamic value like 'Model' isn't great during capture).
+
+The script is self explanatory, it sets a logo filepath (120x120 BMP) variable that's relative to the Task Sequence that's running, copies it across and simply sets some registry values (all of which are optional) :
+
+```powershell
+# Prepare Environment
+$TSEnv = New-Object -COMObject Microsoft.SMS.TSEnvironment
+
+# Media
+$Avatar = "$TSEnv:DEPLOYROOT\Branding\Media\OEMLogo.bmp"
+
+# Prep
+$AvatarFile = Split-Path -Leaf -Path $Avatar
+
+# Set OEM/System Information
+$OEMInfo = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\OEMInformation'
+$Model   = Get-WmiObject -Class win32_computersystem
+
+If ((Test-Path "$env:windir\System32\oobe\info") -eq $false) {
+    New-Item "$env:windir\System32\oobe\info" -ItemType Directory
+}
+Copy-Item        -Path $Avatar  -Destination "$env:windir\System32\oobe\info\$AvatarFile"
+Set-ItemProperty -Path $OEMInfo -Name Logo         -Value "$env:windir\System32\oobe\info\$AvatarFile"
+Set-ItemProperty -Path $OEMInfo -Name Manufacturer -Value "My Company"
+#Set-ItemProperty -Path $OEMInfo -Name Model        -Value $Model.Model
+#Set-ItemProperty -Path $OEMInfo -Name SupportHours -Value "8am - 6pm : Monday to Friday"
+Set-ItemProperty -Path $OEMInfo -Name SupportPhone -Value "0800 800 800"
+Set-ItemProperty -Path $OEMInfo -Name SupportURL   -Value "https://support.website.com"
+```
+[Set-Branding.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-Branding.ps1)
