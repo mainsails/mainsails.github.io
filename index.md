@@ -360,7 +360,6 @@ Setting a computer's 'Control Panel > System and Security > System branding' inf
 
 ![Set-Branding]({{ site.url }}/assets/Set-Branding.png)
 
-
 The script is self explanatory, it sets a logo filepath (120x120 BMP) variable that's relative to the Task Sequence that's running, copies it across and simply sets some registry values (all of which are optional) :
 
 ```powershell
