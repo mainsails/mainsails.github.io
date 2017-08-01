@@ -188,3 +188,164 @@ It sets the encryption method and cipher strength for :
 * Windows 7 will have these set to AES-CBC with a key size of 256 bits
 
 [Microsoft Reference : Encryption algorithm and key size](https://msdn.microsoft.com/en-us/library/windows/desktop/aa376434(v=vs.85).aspx)
+
+
+### Update BIOS during image deployment
+I've taken a simple approach for updating machine BIOS' during imaging. I build a folder structure containing Manufacturer and Model names, drop in the executable and create a file named 'x.x.x.ver' alongside. During imaging I call a PowerShell script that recurses through this folder to match the Manufacturer/Model, reads the current BIOS version and compares it against the name of the '.ver' file. If there's no match, the executable is launched and the BIOS updated.
+
+```
+│   Update-BIOS.ps1
+│
+├───Dell
+│   ├───Latitude 7280
+│   │       1.5.2.ver
+│   │       dellbiosupdate.exe
+│   │
+│   └───Latitude 7480
+│           1.4.3.ver
+│           dellbiosupdate.exe
+│
+└───HP
+    └───EliteDesk 800
+            B03.ver
+            hpbiosupdate.exe
+```
+
+This allows for BIOS upgrades/downgrades as well as a seemless drag and drop replacement of new revisions by colleagues. The script can be called during the Windows PE phase but there's a caveats to watch out for. Not all of these BIOS upgrades support Windows PE and not all architectures are supported. Launching them later in a Task Sequence when Windows is running isn't as "neat" but solves this - Until all the Enterprise vendors support Windows PE on x86/x64, this is the safest option.
+
+```powershell
+Function Write-CMTraceLog {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Message,
+        [int]$ProcessID = $PID,
+        [Parameter()]
+        [ValidateSet(1, 2, 3)]
+        [int]$LogLevel = 1
+    )
+    $TimeGenerated = "$(Get-Date -Format HH:mm:ss).$((Get-Date).Millisecond)+000"
+    $Line          = '<![LOG[{0}]LOG]!><time="{1}" date="{2}" component="{3}" context="" type="{4}" thread="{5}" file="">'
+    $LineFormat    = $Message, $TimeGenerated, (Get-Date -Format MM-dd-yyyy), "$($MyInvocation.ScriptName | Split-Path -Leaf):$($MyInvocation.ScriptLineNumber)", $LogLevel, $ProcessID
+    $Line          = $Line -f $LineFormat
+    Add-Content -Value $Line -Path $Log
+}
+
+# Script Start
+$TSEnv   = New-Object -COMObject Microsoft.SMS.TSEnvironment
+$LogPath = $TSEnv.Value('LOGPATH')
+$Log     = "$LogPath\$(([io.fileinfo]$MyInvocation.MyCommand.Definition).BaseName).log"
+
+Write-CMTraceLog "BIOS Update Scan Starting"
+
+$BIOSPassword  = 'BIOSPassword'
+
+$BIOSStructure = Split-Path $MyInvocation.MyCommand.Path -Parent
+$SystemInfo    = Get-WmiObject -Class Win32_ComputerSystem
+$BIOSInfo      = Get-WmiObject -Class Win32_BIOS
+$Manufacturer  = $SystemInfo.Manufacturer
+$Model         = $SystemInfo.Model
+$BIOSvCurrent  = $BIOSInfo.SMBIOSBIOSVersion
+$BIOSSource    = Get-ChildItem -Path $BIOSStructure -Include $Model -Recurse
+
+Write-CMTraceLog "BIOS Update Folder Structure set to $BIOSStructure"
+Write-CMTraceLog "WMI Lookup on Win32_ComputerSystem : $SystemInfo"
+Write-CMTraceLog "WMI Lookup on Win32_BIOS : $BIOSInfo"
+Write-CMTraceLog "Manufacturer Detected as $Manufacturer"
+Write-CMTraceLog "Model Detected as $Model"
+Write-CMTraceLog "Current BIOS Version Detected as $BIOSvCurrent"
+
+If ($BIOSSource) {
+    Write-CMTraceLog "BIOS Update Source set to $BIOSSource"
+    Write-CMTraceLog "Scanning Update Source for BIOS versions"
+    $BIOSvLatest = Get-ChildItem -Path $BIOSSource -Filter '*.ver' | Select -ExpandProperty BaseName
+    Write-CMTraceLog "Archived BIOS Version Detected as : $BIOSvLatest"
+    If ($BIOSvCurrent -ne $BIOSvLatest) {
+        Write-CMTraceLog "Machine BIOS does not match Archived BIOS"
+        Write-CMTraceLog "Updating BIOS from $BIOSvCurrent to $BIOSvLatest"
+        Write-CMTraceLog "Scanning Update Source for BIOS executable"
+        $UpdateExe = (Get-ChildItem -Path $BIOSSource -Filter *.exe).Name
+        If ($UpdateExe.Count -ne 1) {
+            Write-CMTraceLog "Multiple Executables found in $BIOSSource - Exiting" -LogLevel 3
+            Break
+        }
+        Else {
+            Write-CMTraceLog "BIOS Update Executable detected as : $UpdateExe"
+        }
+        Copy-Item -Path $BIOSSource -Destination $env:TEMP -Recurse -Force
+        Set-Location -Path $env:TEMP\$Model
+        Write-CMTraceLog "New BIOS copied from $BIOSSource to $env:TEMP\$Model)"
+        Write-CMTraceLog "BIOS Executable Vendor detected as : $($BIOSSource.Parent.Name)"
+        If ($BIOSSource.Parent.Name -eq 'Dell') {
+            $UpdateArgs = "/s /f /p=$BIOSPassword"
+        }
+        ElseIf ($BIOSSource.Parent.Name -eq 'HP') {
+            $UpdateArgs = 'TO DO'
+        }
+        Else {
+            Write-CMTraceLog "No Executable Arguments for $($BIOSSource.Parent.Name) are defined -LogLevel 3"
+        }
+        Write-CMTraceLog "Launching BIOS Update : $UpdateEXE"
+        $BIOSUpdate = Start-Process -FilePath $env:TEMP\$Model\$UpdateEXE -NoNewWindow -Wait -Passthru -ArgumentList $UpdateArgs
+        Write-CMTraceLog "Stopped BIOS Update : $UpdateEXE with Return Code $($BIOSUpdate.ExitCode)" -ProcessID $($BIOSUpdate.Id)
+        Write-CMTraceLog "Retrieving Return Codes for $($BIOSSource.Parent.Name) Update Executable"
+        If ($BIOSSource.Parent.Name -eq 'Dell') {
+            Switch ($BIOSUpdate.ExitCode) {
+                '0' {
+                    $BIOSUpdateRtnMsg  = 'SUCCESSFUL : The update was successful'
+                    $BIOSUpdateSuccess = $true      
+                }
+                '1' {
+                    $BIOSUpdateRtnMsg = 'UNSUCCESSFUL (FAILURE) : An error occurred during the update process; the update was not successful.'
+                    $BIOSUpdateSuccess = $false
+                }
+                '2' {
+                    $BIOSUpdateRtnMsg = 'REBOOT_REQUIRED : You must restart the system to apply the updates.'
+                    $BIOSUpdateSuccess = $true
+                }
+                '3' {
+                    $BIOSUpdateRtnMsg = 'DEP_SOFT_ERROR : You attempted to update to the same version of the software. / You tried to downgrade to a previous version of the software.'
+                    $BIOSUpdateSuccess = $false
+                }
+                '4' {
+                    $BIOSUpdateRtnMsg = 'DEP_HARD_ERROR : The update was unsuccessful because the system did not meet BIOS, driver, or firmware prerequisites for the update to be applied, or because no supported device was found on the target system.'
+                    $BIOSUpdateSuccess = $false
+                }
+                '5' {
+                    $BIOSUpdateRtnMsg = 'QUAL_HARD_ERROR : The operating system is not supported by the DUP. / The system is not supported by the DUP. / The DUP is not compatible with the devices found in your system.'
+                    $BIOSUpdateSuccess = $false
+                }
+                '6' {
+                    $BIOSUpdateRtnMsg = 'REBOOTING_SYSTEM : The system is being rebooted.'
+                    $BIOSUpdateSuccess = $true
+                }
+            }
+        }
+        If ($BIOSUpdateSuccess -eq $true) {
+            Write-CMTraceLog "BIOS Update Returned : $BIOSUpdateRtnMsg"
+            $TSEnv.Value('BIOSUpdateRestart') = $true
+        }
+        ElseIf ($BIOSUpdateSuccess -eq $false) {
+            Write-CMTraceLog "BIOS Update Returned : $BIOSUpdateRtnMsg" -LogLevel 3
+        }
+        Else {
+            Write-CMTraceLog "BIOS Update Returned Unknown Result" -LogLevel 2
+        }
+    }
+    Else {
+        Write-CMTraceLog "Machine BIOS matches Archived BIOS : $BIOSvCurrent"
+    }
+}
+Else {
+    Write-CMTraceLog "No Archived BIOS Version Information available for this machine" -LogLevel 2
+}
+If ($TSEnv.Value('BIOSUpdateRestart') -eq $true) {
+    Write-CMTraceLog "Restart required"
+    Write-CMTraceLog "Task Sequence Variable set to enforce restart"
+}
+Write-CMTraceLog "BIOS Update Scan Finished"
+```
+[Update-BIOS.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Deploy/BIOS-Update/Update-BIOS.ps1)
+
+This has the executable's arguments set for Dell and a placeholder for HP. I've also added a CMTrace logging function that will save the logs to the Task Sequence's LOGPATH variable (where it keeps all the other logs) and formats the output into something that will parse nicely.
+
+After BIOS update executables are launched, they tend to exit, reboot and perform the actual firmware flash afterwards. The script takes the exit code and sets a Task Sequence Variable if a reboot is required. If an update is successully run, the Task Sequence can gracefully reboot, flash and resume!
