@@ -215,7 +215,7 @@ This allows for BIOS upgrades/downgrades as well as a seemless drag and drop rep
 
 ```powershell
 Function Write-CMTraceLog {
-    param (
+    Param (
         [Parameter(Mandatory = $true)]
         [string]$Message,
         [int]$ProcessID = $PID,
