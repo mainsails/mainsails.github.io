@@ -1,4 +1,4 @@
-* Contents
+Contents
 {:toc}
 
 # Operating System Deployment
