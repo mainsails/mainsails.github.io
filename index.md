@@ -358,6 +358,8 @@ After BIOS update executables are launched, they tend to exit, reboot and perfor
 ### Branding / Support Information
 Setting a computer's 'Control Panel > System and Security > System branding' information is simple and can be done either during image capture or deployment (although setting a dynamic value like 'Model' isn't great during capture).
 
+![Set-Branding]({{ site.url }}/assets/Set-Branding.png)
+
 The script is self explanatory, it sets a logo filepath (120x120 BMP) variable that's relative to the Task Sequence that's running, copies it across and simply sets some registry values (all of which are optional) :
 
 ```powershell
