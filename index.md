@@ -1,8 +1,8 @@
 * Contents
 {:toc}
 
-# Operating System Deployment
-## Windows 10 - 1703
+# Operating Systems
+## Image Capture
 ### Disable Cortana in OOBE
 Cortana has a lovely habit of starting a conversation with you during OS deployment. Imaging a single machine in a quiet office or 100+ in a building is equally embarassing.
 
@@ -38,6 +38,7 @@ Else {
 Future deployments will carry on as normal but Cortana won't be rattling your speakers rambling on about network settings and regions.
 
 
+## Image Deployment
 ### Remove AppX Packages
 There's ongoing arguments within the OS deployment community regarding the futility of stripping out applications from our images. I've always believed in a clean, vanilla build as most do but it seems that my definition differs from some. Times have changed, the future is here and an out of the box Windows client is a different beast now.
 
