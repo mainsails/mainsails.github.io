@@ -401,3 +401,59 @@ Set-ItemProperty -Path $OEMInfo -Name SupportPhone -Value "0800 800 800"
 Set-ItemProperty -Path $OEMInfo -Name SupportURL   -Value "https://support.website.com"
 ```
 [Set-Branding.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-Branding.ps1)
+
+
+# Applications
+## Application Management PowerShell Module
+Legacy Applications aren't going away any time soon - Locally installed executables/MSIs/DLLs/etc and their configuration is still a day to day task for any Windows sysadmin. It doesn't matter if software is being installed on Workstations, Servers, Virtualised File Systems etc. having a standardised and consistent method for installing, removing, upgrading, logging, configuring and automating these tasks is essential for a multitude of reasons. If you're still reading, you don't need an explanation why and you likely already have an understanding of how wildly different (simple > complex) and underappreciated doing this well can be!
+
+I've been building up a single portable module that covers pretty much any scenario. It can be dot sourced and run locally, imported through a PSSession or used as an extension to central management tools such as AD or SCCM :
+[ApplicationManagement.psm1](https://github.com/mainsails/ps/blob/master/ApplicationManagement.psm1)
+It supports cmdlet-style parameter binding capabilities so options like verbose output are covered and error actions are handled gracefully. There's extensive help and examples for all included functions but nothing beats jumping in to some real-world examples :
+
+### Requirements
+* All Windows Client Operating Systems are supported
+   Windows 7 SP1 and Windows Server 2008R2 through to Windows 10 Build 1703 and Windows Server 2016
+* PowerShell Version 4
+* Administrative Rights
+
+### Usage
+ Start-MSI -Action Install   -Path "C:\Path\To\File\7z1604-x64.msi" -Verbose
+ Start-MSI -Action Uninstall -Path "C:\Path\To\File\7z1604-x64.msi" -Verbose
+ Start-MSI -Action Uninstall -Path "{23170F69-40C1-2702-1604-000001000000}" -Verbose
+ Start-MSP -Path 'C:\Path\To\File\Adobe_Acrobat_DC_x64_EN.msp' -Verbose
+ Start-EXE -Path "C:\Path\To\File\7z1604-x64.exe" -Parameters "/S" -Verbose
+ Get-MsiTableProperty -Path "C:\Path\To\File\7z1604-x64.msi"
+ Get-InstalledApplication -Name "7-Zip"
+ Get-InstalledApplication -ProductCode "{23170F69-40C1-2702-1604-000001000000}"
+ Get-FreeDiskSpace -Drive 'C:'
+ Get-MSIErrorCodeMessage -MSIErrorCode 3010
+ Get-FileVersion -File "C:\Path\To\File\7z1604-x64.exe"
+ New-Shortcut -Path "C:\Path\To\File\TestProgram.lnk" -TargetPath "$env:windir\System32\notepad.exe" -IconLocation "$env:windir\system32\notepad.exe" -Description 'Notepad Shortcut'
+ Get-LoggedOnUser
+ Get-UserProfiles
+ Update-Desktop
+ Update-GroupPolicy
+ Get-PowerSupply
+ (Get-PowerSupply).IsLaptop
+ Remove-MSIApplication -Name 'Java' -Verbose
+ Remove-MSIApplication -Name 'Java' -Verbose -ExcludeFromUninstall (,('DisplayName', 'Java(TM) 6 Update 31', 'RegEx'))
+ Start-EXEAsUser -UserName 'Domain\UserName' -Path "C:\Path\To\File\7zFM.exe" -verbose -wait
+ Start-EXEAsUser -UserName 'Domain\UserName' -Path "powershell.exe" -Parameters '-Command C:\Path\To\File\Script.ps1'
+ Set-ActiveSetup -StubEXEPath "$env:WinDir\regedit.exe" -Arguments "/S `"C:\Path\To\File\HKCURegistryChange.reg`"" -Description 'HKCU Registry Change' -Key 'HKCU_Registry_Change' -Verbose
+ Get-PendingReboot
+ (Get-PendingReboot).LastBootUpTime
+ Block-AppExecution -ProcessName 'excel','winword' -Verbose
+ Unblock-AppExecution -Verbose
+ Convert-RegistryPath -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Test'
+ Set-RegistryKey -Key 'HKLM:SOFTWARE\Test' -Verbose
+ Set-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Test' -Name 'TestName' -Value 'TestValue' -Type String -Verbose
+ Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Test' -Recurse -Verbose
+ Remove-RegistryKey -Key 'HKLM:SOFTWARE\Test' -Name 'TestName' -Verbose
+ New-Folder -Path 'C:\Path\To\Folder' -Verbose
+ Remove-Folder -Path 'C:\Path\To\Folder' -Verbose
+ Copy-File -Path 'C:\Path\To\File\File01.txt' -Destination 'C:\Path\To\File\File01-Copy.txt' -Verbose
+ Copy-File -Path 'C:\Path\To\File\File01.txt' -Destination 'C:\Path\To\Another\File\Test2' -Verbose
+ Copy-File -Path 'C:\Path\To\File\*' -Destination 'C:\Path\To\Another\File' -Recurse -Verbose
+ Remove-File -Path 'C:\Path\To\File\File01.txt' -Verbose
+ Remove-File -LiteralPath 'C:\Path\To\File' -Recurse -Verbose
