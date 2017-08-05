@@ -412,12 +412,13 @@ I've been building up a single portable module that covers pretty much any scena
 It supports cmdlet-style parameter binding capabilities so options like verbose output are covered and error actions are handled gracefully. There's extensive help and examples for all included functions but nothing beats jumping in to some real-world examples :
 
 ### Requirements
-* All Windows Client Operating Systems are supported
+* All Windows Client Operating Systems are supported  
    Windows 7 SP1 and Windows Server 2008R2 through to Windows 10 Build 1703 and Windows Server 2016
 * PowerShell Version 4
 * Administrative Rights
 
 ### Usage
+```powershell
  Start-MSI -Action Install   -Path "C:\Path\To\File\7z1604-x64.msi" -Verbose
  Start-MSI -Action Uninstall -Path "C:\Path\To\File\7z1604-x64.msi" -Verbose
  Start-MSI -Action Uninstall -Path "{23170F69-40C1-2702-1604-000001000000}" -Verbose
@@ -457,3 +458,4 @@ It supports cmdlet-style parameter binding capabilities so options like verbose 
  Copy-File -Path 'C:\Path\To\File\*' -Destination 'C:\Path\To\Another\File' -Recurse -Verbose
  Remove-File -Path 'C:\Path\To\File\File01.txt' -Verbose
  Remove-File -LiteralPath 'C:\Path\To\File' -Recurse -Verbose
+```
