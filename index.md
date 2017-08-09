@@ -459,3 +459,4 @@ It supports cmdlet-style parameter binding capabilities so options like verbose 
  Remove-File -Path 'C:\Path\To\File\File01.txt' -Verbose
  Remove-File -LiteralPath 'C:\Path\To\File' -Recurse -Verbose
 ```
+![InstallRemove-MSI.gif]({{ site.url }}/assets/InstallRemove-MSI.gif)
