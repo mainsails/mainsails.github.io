@@ -439,8 +439,8 @@ It supports cmdlet-style parameter binding capabilities so options like verbose 
  Update-GroupPolicy
  Get-PowerSupply
  (Get-PowerSupply).IsLaptop
- Remove-MSIApplication -Name 'Java' -Verbose
- Remove-MSIApplication -Name 'Java' -Verbose -ExcludeFromUninstall (,('DisplayName', 'Java(TM) 6 Update 31', 'RegEx'))
+ Remove-MSI -Name 'Java' -Verbose
+ Remove-MSI -Name 'Java' -Verbose -ExcludeFromUninstall (,('DisplayName', 'Java(TM) 6 Update 31', 'RegEx'))
  Start-EXEAsUser -UserName 'Domain\UserName' -Path "C:\Path\To\File\7zFM.exe" -verbose -wait
  Start-EXEAsUser -UserName 'Domain\UserName' -Path "powershell.exe" -Parameters '-Command C:\Path\To\File\Script.ps1'
  Set-ActiveSetup -StubEXEPath "$env:WinDir\regedit.exe" -Arguments "/S `"C:\Path\To\File\HKCURegistryChange.reg`"" -Description 'HKCU Registry Change' -Key 'HKCU_Registry_Change' -Verbose
