@@ -403,7 +403,7 @@ Set-ItemProperty -Path $OEMInfo -Name SupportURL   -Value "https://support.websi
 [Set-Branding.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-Branding.ps1)
 
 
-# Application Deployment / Configuration
+# Configuration Management / Application Deployment
 ## Permissions Management PowerShell Module
 PowerShell is fantastic, we know this but... Managing permissions with PowerShell leaves you wondering why the built-in cmdlets havent'y been developed more fully by Microsoft - There is little to help with real world, day-to-day tasks like getting a permission report or adding permissions to an item. PowerShell only really offers `Get-Acl` and `Set-Acl`, everything in-between getting and setting the ACL is missing.
 
@@ -411,7 +411,7 @@ My portable module has no extravagant requirements and makes it easy to manage f
 
 [PermissionManagement.psm1](https://github.com/mainsails/ps/blob/master/PermissionManagement.psm1)
 
-Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard System.Security.AccessControl objects.
+Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard `System.Security.AccessControl` objects.
 
 ### Requirements
 * All Windows Client Operating Systems are supported  
@@ -441,8 +441,7 @@ Grants the 'DOMAIN\Engineers' group full control on 'C:\Test'
 ```powershell
 Grant-Permission -Identity 'DOMAIN\Users' -Permission 'FullControl' -Path 'C:\Test' -Type Deny -Clear
 ```
-Demonstrates how to grant deny permissions on an object with the 'Type' parameter
-Any non-inherited, existing access rules are removed from 'C:\Test'
+Demonstrates how to grant deny permissions on an object with the 'Type' parameter. Any non-inherited, existing access rules are removed from 'C:\Test'
 ```powershell
 Revoke-Permission -Identity 'DOMAIN\Users' -Path 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678'
 ```
