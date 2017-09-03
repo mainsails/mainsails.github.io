@@ -1,6 +1,6 @@
 theme: jekyll-theme-cayman
 title: deployment.fun
-description: System Administration :: Automation :: OS & Application Deployment
+description: System Administration `:`: Automation `:`: OS & Application Deployment
 footer-links:
   github: mainsails/ps
 exclude:
