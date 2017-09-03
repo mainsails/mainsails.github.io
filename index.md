@@ -428,23 +428,23 @@ Get-Permission -Path 'C:\Windows'
 ```powershell
 Disable-AclInheritance -Path 'HKLM:\SOFTWARE\Test' -Preserve
 ```
-*Stops 'HKLM:\SOFTWARE\Test' from inheriting acces rules from its parent, but preserves the existing inheritied access rules*
+Stops 'HKLM:\SOFTWARE\Test' from inheriting acces rules from its parent, but preserves the existing inheritied access rules
 ```powershell
 Enable-AclInheritance -Path 'C:\Test'
 ```
-*Re-enables ACL inheritance on 'C:\Test'. ACLs on 'C:\' will be inherited to and affect 'C:\Test'. Any explicit ACLs on 'C:\Test' are removed*
+Re-enables ACL inheritance on 'C:\Test'. ACLs on 'C:\' will be inherited to and affect 'C:\Test'. Any explicit ACLs on 'C:\Test' are removed
 ```powershell
 Grant-Permission -Identity 'DOMAIN\Engineers' -Permission 'FullControl' -Path 'C:\Test'
 ```
-*Grants the 'DOMAIN\Engineers' group full control on 'C:\Test'*
+Grants the 'DOMAIN\Engineers' group full control on 'C:\Test'
 ```powershell
 Grant-Permission -Identity 'DOMAIN\Users' -Permission 'FullControl' -Path 'C:\Test' -Type Deny -Clear
 ```
-*Demonstrates how to grant deny permissions on an object with the 'Type' parameter. Any non-inherited, existing access rules are removed from 'C:\Test'*
+Demonstrates how to grant deny permissions on an object with the 'Type' parameter. Any non-inherited, existing access rules are removed from 'C:\Test'
 ```powershell
 Revoke-Permission -Identity 'DOMAIN\Users' -Path 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678'
 ```
-*Demonstrates how to revoke the 'DOMAIN\Users' permission to the 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678' certificate's private key/key container*
+Demonstrates how to revoke the 'DOMAIN\Users' permission to the 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678' certificate's private key/key container
 
 
 ## Software Management PowerShell Module
