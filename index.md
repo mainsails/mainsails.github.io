@@ -425,7 +425,7 @@ Extensive help is in place and verbose output is available. When output is requi
 ```powershell
 Get-Permission -Path 'C:\Windows'
 ```
-Returns 'System.Security.AccessControl.FileSystemAccessRule' objects for all the non-inherited rules on 'C:\Windows'
+Returns `System.Security.AccessControl.FileSystemAccessRule` objects for all the non-inherited rules on 'C:\Windows'
 ```powershell
 Disable-AclInheritance -Path 'HKLM:\SOFTWARE\Test' -Preserve
 ```
