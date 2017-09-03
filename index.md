@@ -1,7 +1,7 @@
 * Contents
 {:toc}
 
-# Operating Systems
+# Operating System Deployment
 ## Image Capture
 ### Disable Cortana in OOBE
 Cortana has a lovely habit of starting a conversation with you during OS deployment. Imaging a single machine in a quiet office or 100+ in a building is equally embarassing.
@@ -403,7 +403,52 @@ Set-ItemProperty -Path $OEMInfo -Name SupportURL   -Value "https://support.websi
 [Set-Branding.ps1](https://github.com/mainsails/ps/blob/master/Imaging/Capture/Set-Branding.ps1)
 
 
-# Applications
+# Application Deployment / Configuration
+## Permissions Management PowerShell Module
+PowerShell is fantastic, we know this but... Managing permissions with PowerShell leaves you wondering why the built-in cmdlets havent'y been developed more fully by Microsoft - There is little to help with real world, day-to-day tasks like getting a permission report or adding permissions to an item. PowerShell only really offers `Get-Acl` and `Set-Acl`, everything in-between getting and setting the ACL is missing.
+
+My portable module has no extravagant requirements and makes it easy to manage file system, registry, and certificate permissions :
+
+[PermissionManagement.psm1](https://github.com/mainsails/ps/blob/master/PermissionManagement.psm1)
+
+Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard System.Security.AccessControl objects.
+
+### Requirements
+* All Windows Client Operating Systems are supported  
+   Windows 7 SP1 and Windows Server 2008R2 through to Windows 10 Build 1703 and Windows Server 2016
+* PowerShell Version 4
+* Administrative Rights
+* .NET v2.0 (or later)
+
+
+### Usage
+```powershell
+Get-Permission -Path 'C:\Windows'
+```
+Returns 'System.Security.AccessControl.FileSystemAccessRule' objects for all the non-inherited rules on 'C:\Windows'
+```powershell
+Disable-AclInheritance -Path 'HKLM:\SOFTWARE\Test' -Preserve
+```
+Stops 'HKLM:\SOFTWARE\Test' from inheriting acces rules from its parent, but preserves the existing inheritied access rules
+```powershell
+Enable-AclInheritance -Path 'C:\Test'
+```
+Re-enables ACL inheritance on 'C:\Test'. ACLs on 'C:\' will be inherited to and affect 'C:\Test'. Any explicit ACLs on 'C:\Test' are removed
+```powershell
+Grant-Permission -Identity 'DOMAIN\Engineers' -Permission 'FullControl' -Path 'C:\Test'
+```
+Grants the 'DOMAIN\Engineers' group full control on 'C:\Test'
+```powershell
+Grant-Permission -Identity 'DOMAIN\Users' -Permission 'FullControl' -Path 'C:\Test' -Type Deny -Clear
+```
+Demonstrates how to grant deny permissions on an object with the 'Type' parameter
+Any non-inherited, existing access rules are removed from 'C:\Test'
+```powershell
+Revoke-Permission -Identity 'DOMAIN\Users' -Path 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678'
+```
+Demonstrates how to revoke the 'DOMAIN\Users' permission to the 'Cert:\LocalMachine\My\1234567890ABCDEF1234567890ABCDEF12345678' certificate's private key/key container
+
+
 ## Software Management PowerShell Module
 Legacy Applications aren't going away any time soon - Locally installed executables/MSIs/DLLs/etc and their configuration is still a day to day task for any Windows sysadmin. It doesn't matter if software is being installed on Workstations, Servers, Virtualised File Systems etc. having a standardised and consistent method for installing, removing, upgrading, logging, configuring and automating these tasks is essential for a multitude of reasons. If you're still reading, you don't need an explanation why and you likely already have an understanding of how wildly different (simple > complex) and underappreciated doing this well can be!
 
@@ -411,13 +456,15 @@ I've been building up a single portable module that covers pretty much any scena
 
 [SoftwareManagement.psm1](https://github.com/mainsails/ps/blob/master/SoftwareManagement.psm1)
 
-It supports cmdlet-style parameter binding capabilities so options like verbose output are covered and error actions are handled gracefully. There's extensive help and examples for all included functions but nothing beats jumping in to some real-world examples :
+It supports cmdlet-style parameter binding capabilities so options like verbose output are covered and error actions are handled gracefully. There's extensive help and examples for all included functions but nothing beats jumping in to some real world examples :
+
 
 ### Requirements
 * All Windows Client Operating Systems are supported  
    Windows 7 SP1 and Windows Server 2008R2 through to Windows 10 Build 1703 and Windows Server 2016
 * PowerShell Version 4
 * Administrative Rights
+
 
 ### Usage
 ```powershell
@@ -461,6 +508,7 @@ It supports cmdlet-style parameter binding capabilities so options like verbose 
  Remove-File -Path 'C:\Path\To\File\File01.txt' -Verbose
  Remove-File -LiteralPath 'C:\Path\To\File' -Recurse -Verbose
 ```
+
 
 ### Examples
 ![InstallRemove-MSI]({{ site.url }}/assets/InstallRemove-MSI.gif)
