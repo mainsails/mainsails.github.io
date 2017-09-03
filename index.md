@@ -413,12 +413,11 @@ My portable module has no extravagant requirements and makes it easy to manage f
 
 Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard `System.Security.AccessControl` objects.
 
+
 ### Requirements
 * All Windows Client Operating Systems are supported  
    Windows 7 SP1 and Windows Server 2008R2 through to Windows 10 Build 1703 and Windows Server 2016
 * PowerShell Version 4
-* Administrative Rights
-* .NET v2.0 (or later)
 
 
 ### Usage
