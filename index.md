@@ -409,7 +409,7 @@ PowerShell is fantastic, we know this but... Managing permissions with PowerShel
 
 My portable module has no extravagant requirements and makes it easy to manage file system, registry, and certificate permissions :
 
-[PermissionManagement.psm1](https://github.com/mainsails/ps/blob/master/PermissionManagement.psm1)
+[PermissionManagement](https://github.com/mainsails/ps/tree/master/PermissionManagement)
 
 Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard `System.Security.AccessControl` objects.
 
@@ -450,9 +450,9 @@ Demonstrates how to revoke the 'DOMAIN\Users' permission to the 'Cert:\LocalMach
 ## Software Management PowerShell Module
 Legacy Applications aren't going away any time soon - Locally installed executables/MSIs/DLLs/etc and their configuration is still a day to day task for any Windows sysadmin. It doesn't matter if software is being installed on Workstations, Servers, Virtualised File Systems etc. having a standardised and consistent method for installing, removing, upgrading, logging, configuring and automating these tasks is essential for a multitude of reasons. If you're still reading, you don't need an explanation why and you likely already have an understanding of how wildly different (simple > complex) and underappreciated doing this well can be!
 
-I've been building up a single portable module that covers pretty much any scenario. It can be dot sourced and run locally, imported through a PSSession or used as an extension to central management tools such as AD or SCCM :
+I've been building up a module that covers pretty much any scenario. It can be dot sourced and run locally, imported through a PSSession or used as an extension to central management tools such as AD or SCCM :
 
-[SoftwareManagement.psm1](https://github.com/mainsails/ps/blob/master/SoftwareManagement.psm1)
+[SoftwareManagement](https://github.com/mainsails/ps/tree/master/SoftwareManagement)
 
 It supports cmdlet-style parameter binding capabilities so options like verbose output are covered and error actions are handled gracefully. There's extensive help and examples for all included functions but nothing beats jumping in to some real world examples :
 
