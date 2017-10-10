@@ -405,11 +405,11 @@ Set-ItemProperty -Path $OEMInfo -Name SupportURL   -Value "https://support.websi
 
 # Configuration Management / Application Deployment
 ## Permissions Management PowerShell Module
-PowerShell is fantastic, we know this but... Managing permissions with PowerShell leaves you wondering why the built-in cmdlets havent'y been developed more fully by Microsoft - There is little to help with real world, day-to-day tasks like getting a permission report or adding permissions to an item. PowerShell only really offers `Get-Acl` and `Set-Acl`, everything in-between getting and setting the ACL is missing.
+PowerShell is fantastic, we know this but... Managing permissions with PowerShell leaves you wondering why the built-in cmdlets haven't been developed more fully by Microsoft - There is little to help with real world, day-to-day tasks like getting a permission report or adding permissions to an item. PowerShell only really offers `Get-Acl` and `Set-Acl`, everything in-between getting and setting the ACL is missing.
 
-My portable module has no extravagant requirements and makes it easy to manage file system, registry, and certificate permissions :
+My module has no extravagant requirements and makes it easy to manage file system, registry, and certificate permissions :
 
-[PermissionManagement](https://github.com/mainsails/ps/tree/master/PermissionManagement)
+[PermissionManagement](https://github.com/mainsails/PermissionManagement)
 
 Extensive help is in place and verbose output is available. When output is required, the cmdlets return standard `System.Security.AccessControl` objects.
 
