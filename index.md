@@ -207,6 +207,18 @@ It sets the encryption method and cipher strength for :
 [Microsoft Reference : Encryption algorithm and key size](https://msdn.microsoft.com/en-us/library/windows/desktop/aa376434(v=vs.85).aspx)
 
 
+### BitLocker on Tablets/Slates
+Imaging to certain models of Tablets with a Task Sequence with BitLocker enabled can fail with the error : ‘No pre-boot keyboard or Windows Recovery environment detected’
+
+Tablets like the Microsoft Surface often trigger this error with and without their keyboard attached but there's a simple fix :
+
+```
+reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\FVE /v OSEnablePrebootInputProtectorsOnSlates /t REG_DWORD /d 1 /f
+```
+
+Adding this key during the Task Sequence,before BitLocker is finally enabled will prevent the error in smsts.log and allow encryption to complete
+
+
 ### Update BIOS during image deployment
 I've taken a simple approach for updating machine BIOS' during imaging. I build a folder structure containing Manufacturer and Model names, drop in the executable and create a file named 'x.x.x.ver' alongside. During imaging I call a PowerShell script that recurses through this folder to match the Manufacturer/Model, reads the current BIOS version and compares it against the name of the '.ver' file. If there's no match, the executable is launched and the BIOS updated.
 
