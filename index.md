@@ -208,7 +208,7 @@ It sets the encryption method and cipher strength for :
 
 
 ### BitLocker on Tablets/Slates
-Imaging to certain models of Tablets with a Task Sequence with BitLocker enabled can fail with the error : ‘No pre-boot keyboard or Windows Recovery environment detected’
+Imaging certain models of Tablets from a Task Sequence with BitLocker enabled can fail with the error : `‘No pre-boot keyboard or Windows Recovery environment detected’`
 
 Tablets like the Microsoft Surface often trigger this error with and without their keyboard attached but there's a simple fix :
 
@@ -216,7 +216,7 @@ Tablets like the Microsoft Surface often trigger this error with and without the
 reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\FVE /v OSEnablePrebootInputProtectorsOnSlates /t REG_DWORD /d 1 /f
 ```
 
-Adding this key during the Task Sequence,before BitLocker is finally enabled will prevent the error in smsts.log and allow encryption to complete
+Adding this key during the Task Sequence, before BitLocker is finally enabled will prevent the error in smsts.log and allow encryption to complete.
 
 
 ### Update BIOS during image deployment
